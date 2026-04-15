@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TaskManager - Sistema de Gestión de Tareas</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<!-- ===== MÓDULO LOGIN ===== -->
+<div id="loginPage" class="page active">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-icon">✓</div>
+        <h1>TaskManager</h1>
+        <p>Sistema de Gestión de Tareas</p>
+      </div>
+      <div class="login-form">
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="loginEmail" placeholder="maira@taskmanager.com" />
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+        <div id="loginError" class="error-msg" style="display:none;">Credenciales incorrectas. Intente de nuevo.</div>
+        <button id="loginButton" class="btn btn-primary btn-full">Iniciar Sesión</button>
+        <p class="login-hint">Demo: maira@taskmanager.com / 1234</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MÓDULO DASHBOARD + TAREAS ===== -->
+<div id="appPage" class="page">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon-sm">✓</div>
+      <span>TaskManager</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-link active" data-section="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a class="nav-link" data-section="tareas">
+        <span class="nav-icon">📋</span> Mis Tareas
+      </a>
+      <a class="nav-link" data-section="nueva">
+        <span class="nav-icon">➕</span> Nueva Tarea
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">MS</div>
+        <div>
+          <div class="user-name" id="sidebarUser">Maira Cano.</div>
+          <div class="user-role">Estudiante ADSO</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <h2 class="page-title" id="pageTitle">Dashboard</h2>
+      <div class="topbar-date" id="topbarDate"></div>
+    </div>
+
+    <!-- SECCIÓN DASHBOARD -->
+    <div id="sectionDashboard" class="section active">
+      <div class="stats-grid">
+        <div class="stat-card stat-total">
+          <div class="stat-number" id="statTotal">0</div>
+          <div class="stat-label">Total Tareas</div>
+          <div class="stat-icon">📋</div>
+        </div>
+        <div class="stat-card stat-pending">
+          <div class="stat-number" id="statPending">0</div>
+          <div class="stat-label">Pendientes</div>
+          <div class="stat-icon">⏳</div>
+        </div>
+        <div class="stat-card stat-progress">
+          <div class="stat-number" id="statProgress">0</div>
+          <div class="stat-label">En Progreso</div>
+          <div class="stat-icon">🔄</div>
+        </div>
+        <div class="stat-card stat-done">
+          <div class="stat-number" id="statDone">0</div>
+          <div class="stat-label">Completadas</div>
+          <div class="stat-icon">✅</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <div class="card-header">Distribución por Categoría</div>
+          <div class="card-body">
+            <div class="category-bar">
+              <div class="cat-item">
+                <div class="cat-label"><span class="dot dot-blue"></span>Académicas</div>
+                <div class="cat-bar-wrap"><div class="cat-bar cat-bar-blue" id="barAcademica"></div></div>
+                <span id="numAcademica">0</span>
+              </div>
+              <div class="cat-item">
+                <div class="cat-label"><span class="dot dot-green"></span>Personales</div>
+                <div class="cat-bar-wrap"><div class="cat-bar cat-bar-green" id="barPersonal"></div></div>
+                <span id="numPersonal">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Resumen Rápido</div>
+          <div class="card-body">
+            <div class="summary-item">
+              <span>Tareas para hoy</span>
+              <span class="badge badge-warning" id="summaryToday">—</span>
+            </div>
+            <div class="summary-item">
+              <span>Alta prioridad</span>
+              <span class="badge badge-danger" id="summaryHigh">—</span>
+            </div>
+            <div class="summary-item">
+              <span>% Completado</span>
+              <span class="badge badge-success" id="summaryPercent">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN TAREAS -->
+    <div id="sectionTareas" class="section">
+      <div class="filters-bar">
+        <select id="filterEstado" onchange="filterTasks()">
+          <option value="">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="en progreso">En Progreso</option>
+          <option value="completada">Completada</option>
+        </select>
+        <select id="filterCategoria" onchange="filterTasks()">
+          <option value="">Todas las categorías</option>
+          <option value="academica">Académica</option>
+          <option value="personal">Personal</option>
+        </select>
+      </div>
+      <div id="tasksList" class="tasks-list"></div>
+    </div>
+
+    <!-- SECCIÓN NUEVA TAREA -->
+    <div id="sectionNueva" class="section">
+      <div class="card form-card">
+        <div class="card-header">Crear Nueva Tarea</div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Título de la tarea *</label>
+              <input type="text" id="newTitle" placeholder="Ej: Estudiar para el examen" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea id="newDesc" placeholder="Detalles de la tarea..."></textarea>
+            </div>
+          </div>
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label>Categoría</label>
+              <select id="newCategoria">
+                <option value="personal">Personal</option>
+                <option value="academica">Académica</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Prioridad</label>
+              <select id="newPrioridad">
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+          </div>
+          <div id="formMsg" class="form-msg" style="display:none;"></div>
+          <button class="btn btn-primary" onclick="createTask()">Guardar Tarea</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal de edición -->
+<div id="editModal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Editar Tarea</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId" />
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" id="editTitle" />
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="editDesc"></textarea>
+      </div>
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="editEstado">
+            <option value="pendiente">Pendiente</option>
+            <option value="en progreso">En Progreso</option>
+            <option value="completada">Completada</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prioridad</label>
+          <select id="editPrioridad">
+            <option value="baja">Baja</option>
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveEdit()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/index.js"></script>
+</body>
+</html>

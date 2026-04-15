@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nombre": "Maira Susana Cano Ortiz",
+      "email": "maira@taskmanager.com",
+      "password": "1234",
+      "rol": "admin"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 2,
+      "titulo": "Estudiar Node.js y Express",
+      "descripcion": "Repasar módulos, rutas y middleware",
+      "categoria": "academica",
+      "prioridad": "media",
+      "estado": "completada",
+      "userId": 1,
+      "fecha_creacion": "2026-04-13"
+    },
+    {
+      "id": 3,
+      "titulo": "Comprar mercado oooo",
+      "descripcion": "Lista del supermercado del fin de semana",
+      "categoria": "personal",
+      "prioridad": "baja",
+      "estado": "en progreso",
+      "userId": 1,
+      "fecha_creacion": "2026-04-12"
+    },
+    {
+      "id": 4,
+      "titulo": "Hacer ejercicio",
+      "descripcion": "Rutina de 30 minutos",
+      "categoria": "personal",
+      "prioridad": "media",
+      "estado": "pendiente",
+      "userId": 1,
+      "fecha_creacion": "2026-04-13"
+    },
+    {
+      "id": 7,
+      "titulo": "prueba",
+      "descripcion": "gggg",
+      "categoria": "personal",
+      "prioridad": "alta",
+      "estado": "pendiente",
+      "userId": 1,
+      "fecha_creacion": "2026-04-15"
+    }
+  ],
+  "nextTaskId": 8
+}
