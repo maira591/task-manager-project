@@ -36,6 +36,12 @@ function saveDB(data) {
 function handleLogin(body) {
   const db = loadDB();
   const { email, password } = body;
+
+  // Validar que los campos no estén vacíos
+  if (!email || !email.trim() || !password || !password.trim()) {
+    return { success: false, message: 'Credenciales incorrectas' };
+  }
+
   const user = db.users.find(u => u.email === email && u.password === password);
   if (user) {
     return { success: true, user: { id: user.id, nombre: user.nombre, email: user.email, rol: user.rol } };
@@ -53,12 +59,26 @@ function getTasks(userId) {
 
 function createTask(body) {
   const db = loadDB();
+
+  // Validar que el título sea obligatorio y no esté vacío
+  if (!body.titulo || !body.titulo.trim()) {
+    return { success: false, message: 'El título de la tarea es obligatorio' };
+  }
+
+  // Validar categoría permitida
+  const categoriasValidas = ['personal', 'academica'];
+  const categoria = categoriasValidas.includes(body.categoria) ? body.categoria : 'personal';
+
+  // Validar prioridad permitida
+  const prioridadesValidas = ['baja', 'media', 'alta'];
+  const prioridad = prioridadesValidas.includes(body.prioridad) ? body.prioridad : 'media';
+
   const task = {
     id: db.nextTaskId++,
-    titulo: body.titulo,
+    titulo: body.titulo.trim(),
     descripcion: body.descripcion || '',
-    categoria: body.categoria || 'personal',
-    prioridad: body.prioridad || 'media',
+    categoria: categoria,
+    prioridad: prioridad,
     estado: 'pendiente',
     userId: parseInt(body.userId),
     fecha_creacion: new Date().toISOString().split('T')[0]
